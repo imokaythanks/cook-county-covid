@@ -19,12 +19,16 @@ router.get('/', async (req, res, next) => {
       return response.data[0].count_casenumber;
     });
 
-
-  const reportedDeaths = await axios.get('https://idph.illinois.gov/DPHPublicInformation/api/COVID/GetCountyHistorical?countyName=Cook')
+  const cookReportedDeaths = await axios.get('https://idph.illinois.gov/DPHPublicInformation/api/COVID/GetCountyHistorical?countyName=Cook')
     .then((response) => {
       return response.data.values[response.data.values.length - 1].deaths;
     });
-  
+  const chicagoReportedDeaths = await axios.get('https://idph.illinois.gov/DPHPublicInformation/api/COVID/GetCountyHistorical?countyName=Chicago')
+    .then((response) => {
+      return response.data.values[response.data.values.length - 1].deaths;
+    });
+
+  const reportedDeaths = cookReportedDeaths + chicagoReportedDeaths;  
   const covidTicks = now - covidYearStart;
   const referenceTicks = referenceYearEnd - referenceYearStart;
   const expectedDeaths = Math.ceil(deathsInReferenceYear * (covidTicks / referenceTicks));
